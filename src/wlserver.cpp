@@ -1440,8 +1440,23 @@ void wlserver_mousemotion( int x, int y, uint32_t time )
 	auto server = steamcompmgr_get_focused_server();
 	if ( server != NULL )
 	{
-		XTestFakeRelativeMotionEvent( server->get_xdisplay(), x, y, CurrentTime );
+		float dx = (float) = x * g_mouseSensitivity;
+		float dy = (float) = y * g_mouseSensitivity;
+
+		// Accumulate sub-pixel increments to avoid jerky cursor movement
+		static float accum_x = 0.0;
+		static float accum_y = 0.0;
+
+		accum_x += modff( dx, &dx );
+		accum_y += modff( dy, &dy );
+
+		XTestFakeRelativeMotionEvent( server->get_xdisplay(), (int) (dx + accum_x), (int) (dy + accum_y), CurrentTime );
 		XFlush( server->get_xdisplay() );
+
+		// Integer value from `modff` is ignored, but argument can't be NULL
+		float _;
+		accum_x = modff( accum_x, &_ );
+		accum_y = modff( accum_y, &_ );
 	}
 }
 

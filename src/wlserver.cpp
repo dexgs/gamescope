@@ -1440,8 +1440,8 @@ void wlserver_mousemotion( int x, int y, uint32_t time )
 	auto server = steamcompmgr_get_focused_server();
 	if ( server != NULL )
 	{
-		float dx = (float) = x * g_mouseSensitivity;
-		float dy = (float) = y * g_mouseSensitivity;
+		float dx = (float) x * g_mouseSensitivity;
+		float dy = (float) y * g_mouseSensitivity;
 
 		// Accumulate sub-pixel increments to avoid jerky cursor movement
 		static float accum_x = 0.0;
